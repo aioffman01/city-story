@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도시이야기 - 세계 10대 도시</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Leaflet CSS for Map integration -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+    <!-- 로딩 화면 -->
+    <div id="loader" class="loader-container">
+        <div class="loader"></div>
+    </div>
+
+    <div class="dashboard-container" style="max-width: 1300px;">
+        <header class="dashboard-header">
+            <div>
+                <h1>세계 10대 도시</h1>
+                <p class="subtitle" style="margin-bottom: 0;">국가별 중복을 제외한 세계 10대 메트로폴리탄 도시 인구 순위</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="location.href='menu.html'" class="btn-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    이전 화면
+                </button>
+                <button onclick="location.href='logout.php'" class="btn-logout">
+                    로그아웃
+                </button>
+            </div>
+        </header>
+
+        <!-- 10대 도시 카드 그리드 -->
+        <main class="city-grid">
+            <!-- 1. 도쿄 (일본) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 1</span>
+                    <img src="images/tokyo.jpg" alt="도쿄 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>도쿄</h2>
+                            <p class="city-country">일본 (Japan)</p>
+                        </div>
+                        <span class="population-badge">약 3,740만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">센소지 사원, 도쿄 타워, 시부야 스크램블 교차로</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">정통 스시, 돈코츠 라멘, 바삭한 텐동</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 델리 (인도) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 2</span>
+                    <img src="images/delhi.jpg" alt="델리 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>델리</h2>
+                            <p class="city-country">인도 (India)</p>
+                        </div>
+                        <span class="population-badge">약 3,300만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">유네스코 지정 레드 포트, 꾸뚭 미나르, 인디아 게이트</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">풍미 가득한 버터 치킨, 화덕에 구운 난, 마살라 차이</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 상하이 (중국) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 3</span>
+                    <img src="images/shanghai.jpg" alt="상하이 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>상하이</h2>
+                            <p class="city-country">중국 (China)</p>
+                        </div>
+                        <span class="population-badge">약 2,920만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">와이탄 역사 야경, 전통 정원 예원, 동방명주 탑</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">육즙이 넘치는 샤오롱바오, 상하이 털게 요리, 훙사오러우</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 다카 (방글라데시) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 4</span>
+                    <img src="images/dhaka.jpg" alt="다카 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>다카</h2>
+                            <p class="city-country">방글라데시 (Bangladesh)</p>
+                        </div>
+                        <span class="population-badge">약 2,320만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">무굴 제국의 랄바그 요새, 아산 만질 핑크 궁전, 사다르가트 선착장</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">향신료가 가미된 카치 비리야니, 매콤새콤 푸치카, 모로 포라우</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 상파울루 (브라질) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 5</span>
+                    <img src="images/saopaulo.jpg" alt="상파울루 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>상파울루</h2>
+                            <p class="city-country">브라질 (Brazil)</p>
+                        </div>
+                        <span class="population-badge">약 2,260만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">이비라푸에라 공원, 번화한 파울리스타 대로, 상파울루 미술관(MASP)</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">전통 콩고기 스튜 페이조아다, 바베큐 슈하스코, 바삭한 튀김 만두 파스텔</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. 멕시코시티 (멕시코) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 6</span>
+                    <img src="images/mexicocity.jpg" alt="멕시코시티 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>멕시코시티</h2>
+                            <p class="city-country">멕시코 (Mexico)</p>
+                        </div>
+                        <span class="population-badge">약 2,230만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">국립 인류학 박물관, 소칼로 역사 광장, 아즈텍 테오티우아칸 피라미드</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">현지식 정통 타코, 옥수수 껍질로 찐 타말레스, 멕시코 전통 수프 포솔레</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. 카이로 (이집트) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 7</span>
+                    <img src="images/cairo.jpg" alt="카이로 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>카이로</h2>
+                            <p class="city-country">이집트 (Egypt)</p>
+                        </div>
+                        <span class="population-badge">약 2,220만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">기자 대피라미드 & 스핑크스, 이집트 문명 박물관, 칸 엘-칼릴리 전통 시장</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">이집트의 대표 서민 음식 코샤리, 병아리콩 크로켓 타아메야, 풀 메다메스</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. 뉴욕 (미국) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 8</span>
+                    <img src="images/newyork.jpg" alt="뉴욕 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>뉴욕</h2>
+                            <p class="city-country">미국 (USA)</p>
+                        </div>
+                        <span class="population-badge">약 2,150만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">뉴욕 타임스 스퀘어, 상징적인 자유의 여신상, 뉴욕의 허브 센트럴 파크</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">뉴욕식 조각 피자, 쫀득하고 꽉 찬 크림치즈 베이글, 정통 뉴욕 치즈케이크</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. 라고스 (나이지리아) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 9</span>
+                    <img src="images/lagos.jpg" alt="라고스 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>라고스</h2>
+                            <p class="city-country">나이지리아 (Nigeria)</p>
+                        </div>
+                        <span class="population-badge">약 1,650만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">레키 보존 센터 캐노피 워크, 나이키 미술관, 타콰 베이 비치 섬</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">매콤하고 중독적인 졸로프 라이스, 나이지리아식 꼬치구이 수야, 콩 튀김 아카라</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. 마닐라 (필리핀) -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 10</span>
+                    <img src="images/manila.jpg" alt="마닐라 전경" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>마닐라</h2>
+                            <p class="city-country">필리핀 (Philippines)</p>
+                        </div>
+                        <span class="population-badge">약 1,490만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">스페인 식민지풍 성벽 도시 인트라무로스, 리잘 공원, 마닐라 대성당</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">간장 식초 고기 조림 아도보, 새콤하고 얼큰한 시니강 수프, 통돼지 구이 레촌</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 지도 모달 팝업 -->
+    <div id="mapModal" class="modal-overlay">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="closeModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="modal-map-sec">
+                <div id="map"></div>
+            </div>
+            <div class="modal-info-sec">
+                <h2 id="modalCityName">-</h2>
+                <span class="country-label" id="modalCountryName">-</span>
+                
+                <div class="section-title">가장 가까운 국제 공항 (구분 표시)</div>
+                <div class="location-list">
+                    <div class="location-item airport-item" id="airportBtn">
+                        <div class="location-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3.5S19 4 17.5 5.5L14 9 5.8 7.2c-.8-.2-1.7.3-1.8 1.1-.1.5.1 1 .5 1.3L9 13l-4 4-2.5-.5c-.6-.1-1.2.2-1.4.8-.2.7.2 1.4.9 1.6l4 1.5 1.5 4c.2.7.9 1.1 1.6.9.6-.2.9-.8.8-1.4L9 20l4-4 3.5 4.5c.3.4.8.6 1.3.5.8-.1 1.3-1 1.1-1.8z"></path>
+                            </svg>
+                        </div>
+                        <span class="location-name" id="modalAirportName">-</span>
+                    </div>
+                </div>
+                
+                <div class="section-title">주요 관광지</div>
+                <div class="location-list" id="attractionsList">
+                    <!-- JavaScript로 동적 추가됨 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS Library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        // 10개 도시 정보 및 좌표 데이터 정의
+        const CITIES_MAP_DATA = {
+            tokyo: {
+                name: '도쿄',
+                country: '일본 (Japan)',
+                center: [35.6762, 139.6503],
+                zoom: 11,
+                airport: {
+                    name: '하네다 국제공항 (HND)',
+                    coords: [35.5494, 139.7798]
+                },
+                attractions: [
+                    { name: '센소지 사원', coords: [35.7148, 139.7967] },
+                    { name: '도쿄 타워', coords: [35.6586, 139.7454] },
+                    { name: '시부야 스크램블 교차로', coords: [35.6595, 139.7005] }
+                ]
+            },
+            delhi: {
+                name: '델리',
+                country: '인도 (India)',
+                center: [28.6139, 77.2090],
+                zoom: 11,
+                airport: {
+                    name: '인디라 간디 국제공항 (DEL)',
+                    coords: [28.5562, 77.1000]
+                },
+                attractions: [
+                    { name: '레드 포트', coords: [28.6562, 77.2410] },
+                    { name: '꾸뚭 미나르', coords: [28.5245, 77.1855] },
+                    { name: '인디아 게이트', coords: [28.6129, 77.2295] }
+                ]
+            },
+            shanghai: {
+                name: '상하이',
+                country: '중국 (China)',
+                center: [31.2304, 121.4737],
+                zoom: 11,
+                airport: {
+                    name: '상하이 훙차오 국제공항 (SHA)',
+                    coords: [31.1979, 121.3363]
+                },
+                attractions: [
+                    { name: '와이탄 역사 야경', coords: [31.2403, 121.4906] },
+                    { name: '전통 정원 예원', coords: [31.2272, 121.4922] },
+                    { name: '동방명주 탑', coords: [31.2397, 121.4998] }
+                ]
+            },
+            dhaka: {
+                name: '다카',
+                country: '방글라데시 (Bangladesh)',
+                center: [23.8103, 90.4125],
+                zoom: 12,
+                airport: {
+                    name: '하지라트 샤할랄 국제공항 (DAC)',
+                    coords: [23.8433, 90.3978]
+                },
+                attractions: [
+                    { name: '랄바그 요새', coords: [23.7189, 90.3882] },
+                    { name: '아산 만질 핑크 궁전', coords: [23.7086, 90.4060] },
+                    { name: '사다르가트 선착장', coords: [23.7027, 90.4124] }
+                ]
+            },
+            saopaulo: {
+                name: '상파울루',
+                country: '브라질 (Brazil)',
+                center: [-23.5505, -46.6333],
+                zoom: 11,
+                airport: {
+                    name: '과룰류스 국제공항 (GRU)',
+                    coords: [-23.4356, -46.4731]
+                },
+                attractions: [
+                    { name: '이비라푸에라 공원', coords: [-23.5874, -46.6576] },
+                    { name: '파울리스타 대로', coords: [-23.5615, -46.6560] },
+                    { name: '상파울루 미술관(MASP)', coords: [-23.5615, -46.6559] }
+                ]
+            },
+            mexicocity: {
+                name: '멕시코시티',
+                country: '멕시코 (Mexico)',
+                center: [19.4326, -99.1332],
+                zoom: 11,
+                airport: {
+                    name: '멕시코시티 국제공항 (MEX)',
+                    coords: [19.4361, -99.0719]
+                },
+                attractions: [
+                    { name: '국립 인류학 박물관', coords: [19.4260, -99.1863] },
+                    { name: '소칼로 역사 광장', coords: [19.4326, -99.1332] },
+                    { name: '아즈텍 테오티우아칸 피라미드', coords: [19.6925, -98.8438] }
+                ]
+            },
+            cairo: {
+                name: '카이로',
+                country: '이집트 (Egypt)',
+                center: [30.0444, 31.2357],
+                zoom: 11,
+                airport: {
+                    name: '카이로 국제공항 (CAI)',
+                    coords: [30.1219, 31.3997]
+                },
+                attractions: [
+                    { name: '기자 대피라미드 & 스핑크스', coords: [29.9792, 31.1342] },
+                    { name: '이집트 문명 박물관', coords: [30.0076, 31.2504] },
+                    { name: '칸 엘-칼릴리 전통 시장', coords: [30.0478, 31.2622] }
+                ]
+            },
+            newyork: {
+                name: '뉴욕',
+                country: '미국 (USA)',
+                center: [40.7128, -74.0060],
+                zoom: 11,
+                airport: {
+                    name: '존 F. 케네디 국제공항 (JFK)',
+                    coords: [40.6413, -73.7781]
+                },
+                attractions: [
+                    { name: '뉴욕 타임스 스퀘어', coords: [40.7580, -73.9855] },
+                    { name: '상징적인 자유의 여신상', coords: [40.6892, -74.0445] },
+                    { name: '뉴욕의 허브 센트럴 파크', coords: [40.7851, -73.9683] }
+                ]
+            },
+            lagos: {
+                name: '라고스',
+                country: '나이지리아 (Nigeria)',
+                center: [6.5244, 3.3792],
+                zoom: 11,
+                airport: {
+                    name: '무르탈라 무함마드 국제공항 (LOS)',
+                    coords: [6.5774, 3.3210]
+                },
+                attractions: [
+                    { name: '레키 보존 센터 캐노피 워크', coords: [6.4420, 3.5350] },
+                    { name: '나이키 미술관', coords: [6.4326, 3.4704] },
+                    { name: '타콰 베이 비치 섬', coords: [6.4069, 3.4077] }
+                ]
+            },
+            manila: {
+                name: '마닐라',
+                country: '필리핀 (Philippines)',
+                center: [14.5995, 120.9842],
+                zoom: 12,
+                airport: {
+                    name: '니노이 아키노 국제공항 (MNL)',
+                    coords: [14.5086, 121.0194]
+                },
+                attractions: [
+                    { name: '스페인 식민지풍 성벽 도시 인트라무로스', coords: [14.5906, 120.9758] },
+                    { name: '리잘 공원', coords: [14.5826, 120.9787] },
+                    { name: '마닐라 대성당', coords: [14.5917, 120.9734] }
+                ]
+            }
+        };
+
+        let map = null;
+        let mapMarkers = [];
+
+        // 지도 팝업 노출 함수
+        function openCityMap(cityKey) {
+            const cityData = CITIES_MAP_DATA[cityKey];
+            if (!cityData) return;
+
+            // 데이터 바인딩
+            document.getElementById('modalCityName').innerText = cityData.name;
+            document.getElementById('modalCountryName').innerText = cityData.country;
+            document.getElementById('modalAirportName').innerText = cityData.airport.name;
+
+            // 관광지 리스트 바인딩
+            const attractionsList = document.getElementById('attractionsList');
+            attractionsList.innerHTML = '';
+            
+            cityData.attractions.forEach(att => {
+                const item = document.createElement('div');
+                item.className = 'location-item';
+                item.innerHTML = `
+                    <div class="location-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <span class="location-name">${att.name}</span>
+                `;
+                item.addEventListener('click', () => {
+                    focusLocation(att.coords, att.name);
+                });
+                attractionsList.appendChild(item);
+            });
+
+            // 공항 버튼 바인딩
+            const airportBtn = document.getElementById('airportBtn');
+            const newAirportBtn = airportBtn.cloneNode(true);
+            airportBtn.parentNode.replaceChild(newAirportBtn, airportBtn);
+            newAirportBtn.addEventListener('click', () => {
+                focusLocation(cityData.airport.coords, cityData.airport.name);
+            });
+
+            // 모달 활성화
+            const modal = document.getElementById('mapModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+
+            // 지도 초기화
+            setTimeout(() => {
+                initMap(cityData);
+            }, 300);
+        }
+
+        // 모달 비활성화
+        function closeCityMap() {
+            const modal = document.getElementById('mapModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                if (map) {
+                    map.remove();
+                    map = null;
+                }
+                mapMarkers = [];
+            }, 400);
+        }
+
+        // 지도 렌더링
+        function initMap(cityData) {
+            if (map) {
+                map.remove();
+            }
+            mapMarkers = [];
+
+            // 맵 생성
+            map = L.map('map', {
+                zoomControl: false
+            }).setView(cityData.center, cityData.zoom);
+
+            L.control.zoom({
+                position: 'bottomright'
+            }).addTo(map);
+
+            // CartoDB Dark Matter 지도 레이어 설정
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // 국제공항 마커 렌더링 (민트색 구분)
+            const airportIcon = L.divIcon({
+                className: 'custom-marker',
+                html: `
+                    <div class="marker-pin airport-pin">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); position: relative; z-index: 10;">
+                            <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3.5S19 4 17.5 5.5L14 9 5.8 7.2c-.8-.2-1.7.3-1.8 1.1-.1.5.1 1 .5 1.3L9 13l-4 4-2.5-.5c-.6-.1-1.2.2-1.4.8-.2.7.2 1.4.9 1.6l4 1.5 1.5 4c.2.7.9 1.1 1.6.9.6-.2.9-.8.8-1.4L9 20l4-4 3.5 4.5c.3.4.8.6 1.3.5.8-.1 1.3-1 1.1-1.8z"></path>
+                        </svg>
+                    </div>
+                    <div class="marker-label">${cityData.airport.name.split(' (')[0]}</div>
+                `,
+                iconSize: [30, 42],
+                iconAnchor: [0, 0]
+            });
+
+            const airportMarker = L.marker(cityData.airport.coords, { icon: airportIcon })
+                .addTo(map)
+                .bindPopup(`<strong>✈️ 가장 가까운 국제 공항</strong><br>${cityData.airport.name}`);
+            
+            mapMarkers.push({ name: cityData.airport.name, marker: airportMarker, coords: cityData.airport.coords });
+
+            // 주요 관광지 마커 렌더링 (보라색)
+            cityData.attractions.forEach(att => {
+                const attIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `
+                        <div class="marker-pin">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); position: relative; z-index: 10;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                        </div>
+                        <div class="marker-label">${att.name}</div>
+                    `,
+                    iconSize: [30, 42],
+                    iconAnchor: [0, 0]
+                });
+
+                const attMarker = L.marker(att.coords, { icon: attIcon })
+                    .addTo(map)
+                    .bindPopup(`<strong>📍 관광지</strong><br>${att.name}`);
+                
+                mapMarkers.push({ name: att.name, marker: attMarker, coords: att.coords });
+            });
+
+            // 모든 마커가 화면에 담기도록 지도 영역 피팅
+            const bounds = L.latLngBounds(mapMarkers.map(m => m.coords));
+            map.fitBounds(bounds, { padding: [50, 50] });
+
+            // 지도 렌더링 깨짐 보정
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+
+        // 특정 마커 포커스
+        function focusLocation(coords, name) {
+            if (!map) return;
+            map.setView(coords, 14, { animate: true, duration: 1.0 });
+            
+            const target = mapMarkers.find(m => m.name === name);
+            if (target) {
+                setTimeout(() => {
+                    target.marker.openPopup();
+                }, 1000);
+            }
+        }
+
+        // 페이지 로드 시 백엔드 세션 검증 및 지도 모달 제어 바인딩
+        document.addEventListener('DOMContentLoaded', () => {
+            // 로컬 파일 환경(file:///)인 경우 세션 체크를 우회하여 로컬 테스트 지원
+            if (window.location.protocol === 'file:') {
+                console.log('Running in local file mode. Skipping session verification.');
+                const loader = document.getElementById('loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500);
+                }
+
+                // 10대 도시 카드에 지도 보기 기능 동적 바인딩
+                const citiesOrder = ['tokyo', 'delhi', 'shanghai', 'dhaka', 'saopaulo', 'mexicocity', 'cairo', 'newyork', 'lagos', 'manila'];
+                document.querySelectorAll('.city-card').forEach((card, index) => {
+                    card.addEventListener('click', () => {
+                        openCityMap(citiesOrder[index]);
+                    });
+                });
+
+                // 닫기 버튼 및 오버레이 클릭 시 닫기 기능 바인딩
+                const closeModalBtn = document.getElementById('closeModal');
+                if (closeModalBtn) closeModalBtn.addEventListener('click', closeCityMap);
+                
+                const mapModal = document.getElementById('mapModal');
+                if (mapModal) {
+                    mapModal.addEventListener('click', (e) => {
+                        if (e.target.id === 'mapModal') {
+                            closeCityMap();
+                        }
+                    });
+                }
+                return;
+            }
+
+            fetch('check_session.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.authenticated) {
+                        window.location.replace('index.html');
+                    } else {
+                        const loader = document.getElementById('loader');
+                        if (loader) {
+                            loader.style.opacity = '0';
+                            setTimeout(() => {
+                                loader.style.display = 'none';
+                            }, 500);
+                        }
+
+                        // 10대 도시 카드에 지도 보기 기능 동적 바인딩
+                        const citiesOrder = ['tokyo', 'delhi', 'shanghai', 'dhaka', 'saopaulo', 'mexicocity', 'cairo', 'newyork', 'lagos', 'manila'];
+                        document.querySelectorAll('.city-card').forEach((card, index) => {
+                            card.addEventListener('click', () => {
+                                openCityMap(citiesOrder[index]);
+                            });
+                        });
+
+                        // 닫기 버튼 및 오버레이 클릭 시 닫기 기능 바인딩
+                        const closeModalBtn = document.getElementById('closeModal');
+                        if (closeModalBtn) closeModalBtn.addEventListener('click', closeCityMap);
+                        
+                        const mapModal = document.getElementById('mapModal');
+                        if (mapModal) {
+                            mapModal.addEventListener('click', (e) => {
+                                if (e.target.id === 'mapModal') {
+                                    closeCityMap();
+                                }
+                            });
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Session check failed:', err);
+                    window.location.replace('index.html');
+                });
+        });
+    </script>
+</body>
+</html>

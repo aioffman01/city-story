@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도시이야기 - 대한민국 10대 도시</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Leaflet CSS for Map integration -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        .marker-pin.train-pin {
+            background: #3b82f6 !important;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+        }
+        .marker-pin.bus-pin {
+            background: #eab308 !important;
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.5) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 로딩 화면 -->
+    <div id="loader" class="loader-container">
+        <div class="loader"></div>
+    </div>
+
+    <div class="dashboard-container" style="max-width: 1300px;">
+        <header class="dashboard-header">
+            <div>
+                <h1>대한민국 10대 도시</h1>
+                <p class="subtitle" style="margin-bottom: 0;">대한민국 주요 10대 도시의 상세 정보, 유명 관광지 및 가장 가까운 국제공항</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="location.href='menu.html'" class="btn-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    이전 화면
+                </button>
+                <button onclick="location.href='logout.php'" class="btn-logout">
+                    로그아웃
+                </button>
+            </div>
+        </header>
+
+        <!-- 10대 도시 카드 그리드 -->
+        <main class="city-grid">
+            <!-- 1. 서울 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 1</span>
+                    <img src="images/seoul_food.jpg" alt="서울 맛집 이문설농탕" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>서울</h2>
+                            <p class="city-country">대한민국 (Seoul)</p>
+                        </div>
+                        <span class="population-badge">약 938만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">경복궁, N서울타워, 롯데월드타워</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">이문설농탕 (100년 전통 설렁탕 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 부산 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 2</span>
+                    <img src="images/busan_food.jpg" alt="부산 맛집 초량밀면" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>부산</h2>
+                            <p class="city-country">대한민국 (Busan)</p>
+                        </div>
+                        <span class="population-badge">약 329만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">해운대 해수욕장, 감천문화마을, 광안대교</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">초량밀면 (부산역 앞 밀면 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 인천 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 3</span>
+                    <img src="images/incheon_food.jpg" alt="인천 맛집 신승반점 유니짜장" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>인천</h2>
+                            <p class="city-country">대한민국 (Incheon)</p>
+                        </div>
+                        <span class="population-badge">약 300만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">송도 센트럴파크, 차이나타운, 월미도 마이랜드</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">신승반점 (차이나타운 원조 유니짜장 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 대구 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 4</span>
+                    <img src="images/daegu_food.jpg" alt="대구 맛집 구공탄막창" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>대구</h2>
+                            <p class="city-country">대한민국 (Daegu)</p>
+                        </div>
+                        <span class="population-badge">약 237만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">김광석 다시그리기 길, 팔공산 케이블카, 서문시장</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">구공탄막창 (대구 3대 막창구이 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 대전 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 5</span>
+                    <img src="images/daejeon_food.jpg" alt="대전 맛집 오씨칼국수" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>대전</h2>
+                            <p class="city-country">대한민국 (Daejeon)</p>
+                        </div>
+                        <span class="population-badge">약 144만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">성심당 본점, 엑스포 과학공원, 계족산 황톳길</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">오씨칼국수 (물총 칼국수 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. 광주 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 6</span>
+                    <img src="images/gwangju_food.jpg" alt="광주 맛집 송정떡갈비" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>광주</h2>
+                            <p class="city-country">대한민국 (Gwangju)</p>
+                        </div>
+                        <span class="population-badge">약 141만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">국립아시아문화전당, 무등산 서석대, 1913송정역시장</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">송정떡갈비 1호점 (광주 대표 떡갈비 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. 울산 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 7</span>
+                    <img src="images/ulsan_food.jpg" alt="울산 맛집 언양기와집불고기" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>울산</h2>
+                            <p class="city-country">대한민국 (Ulsan)</p>
+                        </div>
+                        <span class="population-badge">약 110만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">태화강 국가정원, 대왕암공원, 간절곶 등대</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">언양기와집불고기 (전통 언양불고기 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. 수원 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 8</span>
+                    <img src="images/suwon_food.jpg" alt="수원 맛집 가보정" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>수원</h2>
+                            <p class="city-country">대한민국 (Suwon)</p>
+                        </div>
+                        <span class="population-badge">약 119만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">수원 화성, 방화수류정, 행리단길</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">가보정 (수원 왕갈비 3대 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. 제주 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 9</span>
+                    <img src="images/jeju_food.jpg" alt="제주 맛집 칠돈가 흑돼지" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>제주</h2>
+                            <p class="city-country">대한민국 (Jeju)</p>
+                        </div>
+                        <span class="population-badge">약 49만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">한라산 백록담, 성산일출봉, 협재해수욕장</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">칠돈가 본점 (제주 흑돼지 연탄구이 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. 강릉 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 10</span>
+                    <img src="images/gangneung_food.jpg" alt="강릉 맛집 형제칼국수" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta">
+                        <div class="city-title-group">
+                            <h2>강릉</h2>
+                            <p class="city-country">대한민국 (Gangneung)</p>
+                        </div>
+                        <span class="population-badge">약 21만 명</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">볼거리</span>
+                            <span class="detail-val">안목해변 커피거리, 경포대 해수욕장, 오죽헌</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">먹거리</span>
+                            <span class="detail-val">형제칼국수 (얼큰한 장칼국수 맛집)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 지도 모달 팝업 -->
+    <div id="mapModal" class="modal-overlay">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="closeModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="modal-map-sec">
+                <div id="map"></div>
+            </div>
+            <div class="modal-info-sec">
+                <h2 id="modalCityName">-</h2>
+                <span class="country-label" id="modalCountryName">-</span>
+                
+                <div class="section-title">가장 가까운 국제 공항 (구분 표시)</div>
+                <div class="location-list">
+                    <div class="location-item airport-item" id="airportBtn">
+                        <div class="location-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3.5S19 4 17.5 5.5L14 9 5.8 7.2c-.8-.2-1.7.3-1.8 1.1-.1.5.1 1 .5 1.3L9 13l-4 4-2.5-.5c-.6-.1-1.2.2-1.4.8-.2.7.2 1.4.9 1.6l4 1.5 1.5 4c.2.7.9 1.1 1.6.9.6-.2.9-.8.8-1.4L9 20l4-4 3.5 4.5c.3.4.8.6 1.3.5.8-.1 1.3-1 1.1-1.8z"></path>
+                            </svg>
+                        </div>
+                        <span class="location-name" id="modalAirportName">-</span>
+                    </div>
+                </div>
+                
+                <div class="section-title">주요 관광지</div>
+                <div class="location-list" id="attractionsList" style="margin-bottom: 1.5rem;">
+                    <!-- JavaScript로 동적 추가됨 -->
+                </div>
+                
+                <div class="section-title">인근 교통망 (50km 이내 기차역/터미널)</div>
+                <div class="location-list" id="transportList">
+                    <!-- JavaScript로 동적 추가됨 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS Library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        // 대한민국 10대 도시 정보 및 좌표 데이터 정의
+        const CITIES_MAP_DATA = {
+            seoul: {
+                name: '서울',
+                country: '대한민국 (Seoul)',
+                center: [37.5665, 126.9780],
+                zoom: 11,
+                airport: {
+                    name: '김포국제공항 (GMP)',
+                    coords: [37.5583, 126.7906]
+                },
+                attractions: [
+                    { name: '경복궁', coords: [37.5796, 126.9770] },
+                    { name: 'N서울타워', coords: [37.5512, 126.9882] },
+                    { name: '이문설농탕 (설렁탕 맛집)', coords: [37.5727, 126.9837] }
+                ],
+                transports: [
+                    { name: '서울역 (KTX)', coords: [37.5551, 126.9707], type: 'train' },
+                    { name: '서울고속버스터미널', coords: [37.5057, 127.0048], type: 'bus' }
+                ]
+            },
+            busan: {
+                name: '부산',
+                country: '대한민국 (Busan)',
+                center: [35.1796, 129.0756],
+                zoom: 11,
+                airport: {
+                    name: '김해국제공항 (PUS)',
+                    coords: [35.1795, 128.9382]
+                },
+                attractions: [
+                    { name: '해운대 해수욕장', coords: [35.1587, 129.1603] },
+                    { name: '감천문화마을', coords: [35.0975, 129.0093] },
+                    { name: '초량밀면 (밀면 맛집)', coords: [35.1165, 129.0401] }
+                ],
+                transports: [
+                    { name: '부산역 (KTX)', coords: [35.1151, 129.0422], type: 'train' },
+                    { name: '부산종합버스터미널', coords: [35.2848, 129.0949], type: 'bus' }
+                ]
+            },
+            incheon: {
+                name: '인천',
+                country: '대한민국 (Incheon)',
+                center: [37.4563, 126.7052],
+                zoom: 11,
+                airport: {
+                    name: '인천국제공항 (ICN)',
+                    coords: [37.4602, 126.4407]
+                },
+                attractions: [
+                    { name: '송도 센트럴파크', coords: [37.3916, 126.6384] },
+                    { name: '인천 차이나타운', coords: [37.4759, 126.6180] },
+                    { name: '신승반점 (유니짜장 맛집)', coords: [37.4752, 126.6186] }
+                ],
+                transports: [
+                    { name: '인천역 (수도권 1호선)', coords: [37.4766, 126.6171], type: 'train' },
+                    { name: '광명역 (KTX - 22km)', coords: [37.4272, 126.8978], type: 'train' },
+                    { name: '인천종합터미널', coords: [37.4429, 126.7011], type: 'bus' }
+                ]
+            },
+            daegu: {
+                name: '대구',
+                country: '대한민국 (Daegu)',
+                center: [35.8714, 128.6014],
+                zoom: 11,
+                airport: {
+                    name: '대구국제공항 (TAE)',
+                    coords: [35.8997, 128.6387]
+                },
+                attractions: [
+                    { name: '서문시장', coords: [35.8690, 128.5815] },
+                    { name: '팔공산 케이블카', coords: [35.9815, 128.6974] },
+                    { name: '구공탄막창 (막창 맛집)', coords: [35.8456, 128.5714] }
+                ],
+                transports: [
+                    { name: '동대구역 (KTX)', coords: [35.8797, 128.6285], type: 'train' },
+                    { name: '동대구복합환승센터', coords: [35.8785, 128.6295], type: 'bus' }
+                ]
+            },
+            daejeon: {
+                name: '대전',
+                country: '대한민국 (Daejeon)',
+                center: [36.3504, 127.3845],
+                zoom: 11,
+                airport: {
+                    name: '청주국제공항 (CJJ)',
+                    coords: [36.7166, 127.4901]
+                },
+                attractions: [
+                    { name: '성심당 본점', coords: [36.3277, 127.4273] },
+                    { name: '엑스포 과학공원', coords: [36.3765, 127.3875] },
+                    { name: '오씨칼국수 (칼국수 맛집)', coords: [36.3458, 127.4241] }
+                ],
+                transports: [
+                    { name: '대전역 (KTX)', coords: [36.3315, 127.4330], type: 'train' },
+                    { name: '서대전역 (KTX)', coords: [36.3228, 127.4042], type: 'train' },
+                    { name: '대전복합터미널', coords: [36.3508, 127.4371], type: 'bus' }
+                ]
+            },
+            gwangju: {
+                name: '광주',
+                country: '대한민국 (Gwangju)',
+                center: [35.1595, 126.8526],
+                zoom: 11,
+                airport: {
+                    name: '무안국제공항 (MWX)',
+                    coords: [34.9914, 126.3828]
+                },
+                attractions: [
+                    { name: '국립아시아문화전당', coords: [35.1461, 126.9201] },
+                    { name: '무등산 서석대', coords: [35.1342, 127.0114] },
+                    { name: '송정떡갈비 1호점 (떡갈비 맛집)', coords: [35.1384, 126.7915] }
+                ],
+                transports: [
+                    { name: '광주송정역 (KTX)', coords: [35.1345, 126.7909], type: 'train' },
+                    { name: '광주종합버스터미널 (유스퀘어)', coords: [35.1601, 126.8812], type: 'bus' }
+                ]
+            },
+            ulsan: {
+                name: '울산',
+                country: '대한민국 (Ulsan)',
+                center: [35.5389, 129.3114],
+                zoom: 11,
+                airport: {
+                    name: '김해국제공항 (PUS)',
+                    coords: [35.1795, 128.9382]
+                },
+                attractions: [
+                    { name: '태화강 국가정원', coords: [35.5542, 129.2937] },
+                    { name: '대왕암공원', coords: [35.5471, 129.4423] },
+                    { name: '언양기와집불고기 (불고기 맛집)', coords: [35.5661, 129.1235] }
+                ],
+                transports: [
+                    { name: '울산역 (KTX - 2km)', coords: [35.5534, 129.1386], type: 'train' },
+                    { name: '태화강역 (동해선)', coords: [35.5398, 129.3548], type: 'train' },
+                    { name: '울산고속버스터미널', coords: [35.5398, 129.3393], type: 'bus' }
+                ]
+            },
+            suwon: {
+                name: '수원',
+                country: '대한민국 (Suwon)',
+                center: [37.2636, 127.0286],
+                zoom: 11,
+                airport: {
+                    name: '김포국제공항 (GMP)',
+                    coords: [37.5583, 126.7906]
+                },
+                attractions: [
+                    { name: '수원 화성', coords: [37.2889, 127.0135] },
+                    { name: '방화수류정', coords: [37.2894, 127.0177] },
+                    { name: '가보정 (왕갈비 맛집)', coords: [37.2758, 127.0315] }
+                ],
+                transports: [
+                    { name: '수원역 (KTX)', coords: [37.2657, 127.0003], type: 'train' },
+                    { name: '수원버스터미널', coords: [37.2512, 127.0195], type: 'bus' }
+                ]
+            },
+            jeju: {
+                name: '제주',
+                country: '대한민국 (Jeju)',
+                center: [33.4996, 126.5312],
+                zoom: 11,
+                airport: {
+                    name: '제주국제공항 (CJU)',
+                    coords: [33.5113, 126.4930]
+                },
+                attractions: [
+                    { name: '성산일출봉', coords: [33.4586, 126.9425] },
+                    { name: '한라산 백록담', coords: [33.3617, 126.5292] },
+                    { name: '칠돈가 본점 (흑돼지 맛집)', coords: [33.4862, 126.4710] }
+                ],
+                transports: [
+                    { name: '제주버스터미널 (대중교통)', coords: [33.4996, 126.5160], type: 'bus' }
+                ]
+            },
+            gangneung: {
+                name: '강릉',
+                country: '대한민국 (Gangneung)',
+                center: [37.7519, 128.8761],
+                zoom: 11,
+                airport: {
+                    name: '양양국제공항 (YNY)',
+                    coords: [38.0614, 128.6693]
+                },
+                attractions: [
+                    { name: '안목해변 커피거리', coords: [37.7721, 128.9482] },
+                    { name: '경포대 해수욕장', coords: [37.8055, 128.9079] },
+                    { name: '형제칼국수 (장칼국수 맛집)', coords: [37.7601, 128.8950] }
+                ],
+                transports: [
+                    { name: '강릉역 (KTX)', coords: [37.7638, 128.8996], type: 'train' },
+                    { name: '강릉고속버스터미널', coords: [37.7538, 128.8788], type: 'bus' }
+                ]
+            }
+        };
+
+        let map = null;
+        let mapMarkers = [];
+
+        // 지도 팝업 노출 함수
+        function openCityMap(cityKey) {
+            const cityData = CITIES_MAP_DATA[cityKey];
+            if (!cityData) return;
+
+            // 데이터 바인딩
+            document.getElementById('modalCityName').innerText = cityData.name;
+            document.getElementById('modalCountryName').innerText = cityData.country;
+            document.getElementById('modalAirportName').innerText = cityData.airport.name;
+
+            // 관광지 리스트 바인딩
+            const attractionsList = document.getElementById('attractionsList');
+            attractionsList.innerHTML = '';
+            
+            cityData.attractions.forEach(att => {
+                const item = document.createElement('div');
+                item.className = 'location-item';
+                item.innerHTML = `
+                    <div class="location-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <span class="location-name">${att.name}</span>
+                `;
+                item.addEventListener('click', () => {
+                    focusLocation(att.coords, att.name);
+                });
+                attractionsList.appendChild(item);
+            });
+
+            // 교통망 리스트 바인딩
+            const transportList = document.getElementById('transportList');
+            transportList.innerHTML = '';
+            if (cityData.transports) {
+                cityData.transports.forEach(trans => {
+                    const item = document.createElement('div');
+                    item.className = 'location-item transport-item';
+                    const iconSvg = trans.type === 'train' ? '🚆' : '🚌';
+                    item.innerHTML = `
+                        <div class="location-icon" style="background: ${trans.type === 'train' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(234, 179, 8, 0.1)'}; color: ${trans.type === 'train' ? '#3b82f6' : '#eab308'}; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 14px;">${iconSvg}</span>
+                        </div>
+                        <span class="location-name">${trans.name}</span>
+                    `;
+                    item.addEventListener('click', () => {
+                        focusLocation(trans.coords, trans.name);
+                    });
+                    transportList.appendChild(item);
+                });
+            }
+
+            // 공항 버튼 바인딩
+            const airportBtn = document.getElementById('airportBtn');
+            const newAirportBtn = airportBtn.cloneNode(true);
+            airportBtn.parentNode.replaceChild(newAirportBtn, airportBtn);
+            newAirportBtn.addEventListener('click', () => {
+                focusLocation(cityData.airport.coords, cityData.airport.name);
+            });
+
+            // 모달 활성화
+            const modal = document.getElementById('mapModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+
+            // 지도 초기화
+            setTimeout(() => {
+                initMap(cityData);
+            }, 300);
+        }
+
+        // 모달 비활성화
+        function closeCityMap() {
+            const modal = document.getElementById('mapModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                if (map) {
+                    map.remove();
+                    map = null;
+                }
+                mapMarkers = [];
+            }, 400);
+        }
+
+        // 지도 렌더링
+        function initMap(cityData) {
+            if (map) {
+                map.remove();
+            }
+            mapMarkers = [];
+
+            // 맵 생성
+            map = L.map('map', {
+                zoomControl: false
+            }).setView(cityData.center, cityData.zoom);
+
+            L.control.zoom({
+                position: 'bottomright'
+            }).addTo(map);
+
+            // CartoDB Dark Matter 지도 레이어 설정
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // 국제공항 마커 렌더링 (민트색 구분)
+            const airportIcon = L.divIcon({
+                className: 'custom-marker',
+                html: `
+                    <div class="marker-pin airport-pin">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); position: relative; z-index: 10;">
+                            <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3.5S19 4 17.5 5.5L14 9 5.8 7.2c-.8-.2-1.7.3-1.8 1.1-.1.5.1 1 .5 1.3L9 13l-4 4-2.5-.5c-.6-.1-1.2.2-1.4.8-.2.7.2 1.4.9 1.6l4 1.5 1.5 4c.2.7.9 1.1 1.6.9.6-.2.9-.8.8-1.4L9 20l4-4 3.5 4.5c.3.4.8.6 1.3.5.8-.1 1.3-1 1.1-1.8z"></path>
+                        </svg>
+                    </div>
+                    <div class="marker-label">${cityData.airport.name.split(' (')[0]}</div>
+                `,
+                iconSize: [30, 42],
+                iconAnchor: [0, 0]
+            });
+
+            const airportMarker = L.marker(cityData.airport.coords, { icon: airportIcon })
+                .addTo(map)
+                .bindPopup(`<strong>✈️ 가장 가까운 국제 공항</strong><br>${cityData.airport.name}`);
+            
+            mapMarkers.push({ name: cityData.airport.name, marker: airportMarker, coords: cityData.airport.coords });
+
+            // 주요 관광지 및 맛집 마커 렌더링 (보라색)
+            cityData.attractions.forEach(att => {
+                const attIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `
+                        <div class="marker-pin">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); position: relative; z-index: 10;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                        </div>
+                        <div class="marker-label">${att.name}</div>
+                    `,
+                    iconSize: [30, 42],
+                    iconAnchor: [0, 0]
+                });
+
+                const attMarker = L.marker(att.coords, { icon: attIcon })
+                    .addTo(map)
+                    .bindPopup(`<strong>📍 주요 장소</strong><br>${att.name}`);
+                
+                mapMarkers.push({ name: att.name, marker: attMarker, coords: att.coords });
+            });
+
+            // 주요 교통수단 마커 렌더링 (50km 이내 기차역/터미널)
+            if (cityData.transports) {
+                cityData.transports.forEach(trans => {
+                    const iconHtml = trans.type === 'train' ? 
+                        `<div class="marker-pin train-pin">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); position: relative; z-index: 10;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                         </div>` : 
+                        `<div class="marker-pin bus-pin">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); position: relative; z-index: 10;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                         </div>`;
+                    
+                    const transIcon = L.divIcon({
+                        className: 'custom-marker',
+                        html: `
+                            ${iconHtml}
+                            <div class="marker-label">${trans.name}</div>
+                        `,
+                        iconSize: [30, 42],
+                        iconAnchor: [0, 0]
+                    });
+
+                    const transMarker = L.marker(trans.coords, { icon: transIcon })
+                        .addTo(map)
+                        .bindPopup(`<strong>${trans.type === 'train' ? '🚆 기차역' : '🚌 터미널'}</strong><br>${trans.name}`);
+                    
+                    mapMarkers.push({ name: trans.name, marker: transMarker, coords: trans.coords });
+                });
+            }
+
+            // 모든 마커가 화면에 담기도록 지도 영역 피팅
+            const bounds = L.latLngBounds(mapMarkers.map(m => m.coords));
+            map.fitBounds(bounds, { padding: [50, 50] });
+
+            // 지도 렌더링 깨짐 보정
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+
+        // 특정 마커 포커스
+        function focusLocation(coords, name) {
+            if (!map) return;
+            map.setView(coords, 14, { animate: true, duration: 1.0 });
+            
+            const target = mapMarkers.find(m => m.name === name);
+            if (target) {
+                setTimeout(() => {
+                    target.marker.openPopup();
+                }, 1000);
+            }
+        }
+
+        // 페이지 로드 시 백엔드 세션 검증 및 지도 모달 제어 바인딩
+        document.addEventListener('DOMContentLoaded', () => {
+            // 로컬 파일 환경(file:///)인 경우 세션 체크를 우회하여 로컬 테스트 지원
+            if (window.location.protocol === 'file:') {
+                console.log('Running in local file mode. Skipping session verification.');
+                const loader = document.getElementById('loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500);
+                }
+
+                // 10대 도시 카드에 지도 보기 기능 동적 바인딩
+                const citiesOrder = ['seoul', 'busan', 'incheon', 'daegu', 'daejeon', 'gwangju', 'ulsan', 'suwon', 'jeju', 'gangneung'];
+                document.querySelectorAll('.city-card').forEach((card, index) => {
+                    card.addEventListener('click', () => {
+                        openCityMap(citiesOrder[index]);
+                    });
+                });
+
+                // 닫기 버튼 및 오버레이 클릭 시 닫기 기능 바인딩
+                const closeModalBtn = document.getElementById('closeModal');
+                if (closeModalBtn) closeModalBtn.addEventListener('click', closeCityMap);
+                
+                const mapModal = document.getElementById('mapModal');
+                if (mapModal) {
+                    mapModal.addEventListener('click', (e) => {
+                        if (e.target.id === 'mapModal') {
+                            closeCityMap();
+                        }
+                    });
+                }
+                return;
+            }
+
+            fetch('check_session.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.authenticated) {
+                        window.location.replace('index.html');
+                    } else {
+                        const loader = document.getElementById('loader');
+                        if (loader) {
+                            loader.style.opacity = '0';
+                            setTimeout(() => {
+                                loader.style.display = 'none';
+                            }, 500);
+                        }
+
+                        // 10대 도시 카드에 지도 보기 기능 동적 바인딩
+                        const citiesOrder = ['seoul', 'busan', 'incheon', 'daegu', 'daejeon', 'gwangju', 'ulsan', 'suwon', 'jeju', 'gangneung'];
+                        document.querySelectorAll('.city-card').forEach((card, index) => {
+                            card.addEventListener('click', () => {
+                                openCityMap(citiesOrder[index]);
+                            });
+                        });
+
+                        // 닫기 버튼 및 오버레이 클릭 시 닫기 기능 바인딩
+                        const closeModalBtn = document.getElementById('closeModal');
+                        if (closeModalBtn) closeModalBtn.addEventListener('click', closeCityMap);
+                        
+                        const mapModal = document.getElementById('mapModal');
+                        if (mapModal) {
+                            mapModal.addEventListener('click', (e) => {
+                                if (e.target.id === 'mapModal') {
+                                    closeCityMap();
+                                }
+                            });
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Session check failed:', err);
+                    window.location.replace('index.html');
+                });
+        });
+    </script>
+</body>
+</html>

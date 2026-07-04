@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도시이야기 - 제주 10대 식당</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Leaflet CSS for Map integration -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+    <!-- 로딩 화면 -->
+    <div id="loader" class="loader-container">
+        <div class="loader"></div>
+    </div>
+
+    <div class="dashboard-container" style="max-width: 1300px;">
+        <header class="dashboard-header">
+            <div>
+                <h1>제주 10대 식당</h1>
+                <p class="subtitle" style="margin-bottom: 0;">제주도를 대표하는 10대 맛집의 상세 정보 및 위치 안내</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="location.href='menu.html'" class="btn-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    이전 화면
+                </button>
+                <button onclick="location.href='logout.php'" class="btn-logout">
+                    로그아웃
+                </button>
+            </div>
+        </header>
+
+        <!-- 10대 식당 카드 그리드 -->
+        <main class="city-grid">
+            <!-- 1. 늘봄흑돼지 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 1</span>
+                    <img src="images/jeju_rest_1.jpg" alt="늘봄흑돼지" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>늘봄흑돼지</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest1')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">흑돼지 구이</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">노형동</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">흑돼지 삼겹살, 목살</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">두툼하고 육즙 가득한 제주 흑돼지 전문점</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 우진해장국 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 2</span>
+                    <img src="images/jeju_rest_2.jpg" alt="우진해장국" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>우진해장국</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest2')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">해장국</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">삼도이동</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">고사리육개장, 몸국</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">고사리를 갈아 넣어 걸쭉하고 구수한 해장국 맛집</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 자매국수 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 3</span>
+                    <img src="images/jeju_rest_3.jpg" alt="자매국수" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>자매국수</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest3')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">고기국수</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">탑동</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">고기국수, 비빔국수</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">진한 사골 육수에 야들야들한 돔베고기를 얹은 국수</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 산방식당 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 4</span>
+                    <img src="images/jeju_rest_4.jpg" alt="산방식당" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>산방식당</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest4')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">밀면</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">대정읍</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">제주식 밀냉면, 수육</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">시원하고 쫄깃한 제주식 밀면과 부드러운 수육의 조화</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 올래국수 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 5</span>
+                    <img src="images/jeju_rest_5.jpg" alt="올래국수" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>올래국수</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest5')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">고기국수</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">연동</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">고기국수</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">맑고 깊은 담백한 국물에 두툼한 고기가 듬뿍 들어간 맛집</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. 명진전복 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 6</span>
+                    <img src="images/jeju_rest_6.jpg" alt="명진전복" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>명진전복</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest6')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">전복요리</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">구좌읍</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">전복돌솥밥, 전복구이</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">내장과 함께 지어 고소한 돌솥밥과 싱싱한 전복구이</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. 덕인당 소길점 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 7</span>
+                    <img src="images/jeju_rest_7.jpg" alt="덕인당 소길점" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>덕인당 소길점</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest7')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">보리빵</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">애월읍</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">보리빵, 쑥빵</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">옛날 방식 그대로 팥소가 들어간 구수한 보리빵</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. 춘심이네 본점 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 8</span>
+                    <img src="images/jeju_rest_8.jpg" alt="춘심이네 본점" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>춘심이네 본점</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest8')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">갈치구이</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">안덕면</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">통갈치구이, 갈치조림</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">테이블을 가득 채우는 거대한 크기의 통갈치구이 전문점</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. 맛나식당 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 9</span>
+                    <img src="images/jeju_rest_9.jpg" alt="맛나식당" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>맛나식당</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest9')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">갈치조림</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">성산읍</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">갈치조림, 고등어조림</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">가성비 최고의 매콤달콤 밥도둑 갈치조림 전문점</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. 오는정김밥 -->
+            <div class="city-card">
+                <div class="city-card-header">
+                    <span class="city-rank-badge">RANK 10</span>
+                    <img src="images/jeju_rest_10.jpg" alt="오는정김밥" class="city-image">
+                </div>
+                <div class="city-card-body">
+                    <div class="city-meta" style="align-items: flex-start;">
+                        <div class="city-title-group" style="flex: 1;">
+                            <h2 style="display: flex; align-items: center; gap: 8px;">
+                                <span>오는정김밥</span>
+                                <a href="javascript:void(0)" onclick="event.stopPropagation(); openCityMap('rest10')" class="map-link" style="font-size: 0.75rem; color: var(--secondary-color); font-weight: 500; text-decoration: none; border: 1px solid rgba(6, 182, 212, 0.3); padding: 2px 6px; border-radius: 4px; background: rgba(6, 182, 212, 0.05); transition: var(--transition); white-space: nowrap;">지도 보기</a>
+                            </h2>
+                            <p class="city-country">김밥</p>
+                        </div>
+                        <span class="population-badge" style="margin-left: 10px;">서귀포시</span>
+                    </div>
+                    <div class="city-details">
+                        <div class="detail-item">
+                            <span class="detail-label">대표메뉴</span>
+                            <span class="detail-val">오는정김밥, 치즈김밥</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">특징</span>
+                            <span class="detail-val">튀긴 유부가 씹히는 바삭하고 중독성 강한 김밥</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 지도 모달 팝업 -->
+    <div id="mapModal" class="modal-overlay">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="closeModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="modal-map-sec">
+                <div id="map"></div>
+            </div>
+            <div class="modal-info-sec">
+                <h2 id="modalCityName">-</h2>
+                <span class="country-label" id="modalCountryName">-</span>
+                
+                <div class="section-title" style="display: none;">가장 가까운 국제 공항 (구분 표시)</div>
+                <div class="location-list" style="display: none;">
+                    <div class="location-item airport-item" id="airportBtn">
+                        <div class="location-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3.5S19 4 17.5 5.5L14 9 5.8 7.2c-.8-.2-1.7.3-1.8 1.1-.1.5.1 1 .5 1.3L9 13l-4 4-2.5-.5c-.6-.1-1.2.2-1.4.8-.2.7.2 1.4.9 1.6l4 1.5 1.5 4c.2.7.9 1.1 1.6.9.6-.2.9-.8.8-1.4L9 20l4-4 3.5 4.5c.3.4.8.6 1.3.5.8-.1 1.3-1 1.1-1.8z"></path>
+                            </svg>
+                        </div>
+                        <span class="location-name" id="modalAirportName">-</span>
+                    </div>
+                </div>
+                
+                <div class="section-title">위치</div>
+                <div class="location-list" id="attractionsList">
+                    <!-- JavaScript로 동적 추가됨 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS Library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        // 제주 10대 식당 정보 및 좌표 데이터 정의
+        const CITIES_MAP_DATA = {
+            rest1: { lat: 33.4802, lng: 126.4789, name: '늘봄흑돼지', desc: '흑돼지 삼겹살, 목살', attractions: [{name: '늘봄흑돼지', coords: [33.4802, 126.4789]}] },
+            rest2: { lat: 33.5115, lng: 126.5200, name: '우진해장국', desc: '고사리육개장, 몸국', attractions: [{name: '우진해장국', coords: [33.5115, 126.5200]}] },
+            rest3: { lat: 33.5186, lng: 126.5262, name: '자매국수', desc: '고기국수, 비빔국수', attractions: [{name: '자매국수', coords: [33.5186, 126.5262]}] },
+            rest4: { lat: 33.2241, lng: 126.2526, name: '산방식당', desc: '제주식 밀냉면, 수육', attractions: [{name: '산방식당', coords: [33.2241, 126.2526]}] },
+            rest5: { lat: 33.4914, lng: 126.4967, name: '올래국수', desc: '고기국수', attractions: [{name: '올래국수', coords: [33.4914, 126.4967]}] },
+            rest6: { lat: 33.5350, lng: 126.8377, name: '명진전복', desc: '전복돌솥밥, 전복구이', attractions: [{name: '명진전복', coords: [33.5350, 126.8377]}] },
+            rest7: { lat: 33.5323, lng: 126.6341, name: '덕인당 소길점', desc: '보리빵, 쑥빵', attractions: [{name: '덕인당 소길점', coords: [33.5323, 126.6341]}] },
+            rest8: { lat: 33.2801, lng: 126.3703, name: '춘심이네 본점', desc: '통갈치구이, 갈치조림', attractions: [{name: '춘심이네 본점', coords: [33.2801, 126.3703]}] },
+            rest9: { lat: 33.4623, lng: 126.9248, name: '맛나식당', desc: '갈치조림, 고등어조림', attractions: [{name: '맛나식당', coords: [33.4623, 126.9248]}] },
+            rest10: { lat: 33.2496, lng: 126.5654, name: '오는정김밥', desc: '오는정김밥, 치즈김밥', attractions: [{name: '오는정김밥', coords: [33.2496, 126.5654]}] }
+        };
+
+        let map = null;
+        let mapMarkers = [];
+
+        // 지도 팝업 노출 함수
+        function openCityMap(cityKey) {
+            const cityData = CITIES_MAP_DATA[cityKey];
+            if (!cityData) return;
+
+            // 데이터 바인딩
+            document.getElementById('modalCityName').innerText = cityData.name;
+            document.getElementById('modalCountryName').innerText = cityData.desc;
+
+            // 위치 리스트 바인딩
+            const attractionsList = document.getElementById('attractionsList');
+            attractionsList.innerHTML = '';
+            
+            // 식당 자체 위치 아이템 추가
+            const item = document.createElement('div');
+            item.className = 'location-item';
+            item.innerHTML = `
+                <div class="location-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </div>
+                <span class="location-name">${cityData.name}</span>
+            `;
+            item.addEventListener('click', () => {
+                focusLocation([cityData.lat, cityData.lng], cityData.name);
+            });
+            attractionsList.appendChild(item);
+
+            // 모달 활성화
+            const modal = document.getElementById('mapModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+
+            // 지도 초기화
+            setTimeout(() => {
+                initMap(cityData);
+            }, 300);
+        }
+
+        // 모달 비활성화
+        function closeCityMap() {
+            const modal = document.getElementById('mapModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                if (map) {
+                    map.remove();
+                    map = null;
+                }
+                mapMarkers = [];
+            }, 400);
+        }
+
+        // 지도 렌더링
+        function initMap(cityData) {
+            if (map) {
+                map.remove();
+            }
+            mapMarkers = [];
+
+            // 맵 생성 및 식당 좌표 중심 설정
+            map = L.map('map', {
+                zoomControl: false
+            }).setView([cityData.lat, cityData.lng], 16);
+
+            L.control.zoom({
+                position: 'bottomright'
+            }).addTo(map);
+
+            // CartoDB Dark Matter 지도 레이어 설정
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // 식당 자체 마커 생성 (보라색 핀)
+            const attIcon = L.divIcon({
+                className: 'custom-marker',
+                html: `
+                    <div class="marker-pin">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg); position: relative; z-index: 10;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                    </div>
+                    <div class="marker-label">${cityData.name}</div>
+                `,
+                iconSize: [30, 42],
+                iconAnchor: [0, 0]
+            });
+
+            const attMarker = L.marker([cityData.lat, cityData.lng], { icon: attIcon })
+                .addTo(map)
+                .bindPopup(`<strong>📍 ${cityData.name}</strong><br>${cityData.desc}`);
+            
+            mapMarkers.push({ name: cityData.name, marker: attMarker, coords: [cityData.lat, cityData.lng] });
+
+            // 지도 렌더링 깨짐 보정 및 마커 자동 팝업
+            setTimeout(() => {
+                map.invalidateSize();
+                attMarker.openPopup();
+            }, 100);
+        }
+
+        // 특정 마커 포커스
+        function focusLocation(coords, name) {
+            if (!map) return;
+            map.setView(coords, 16, { animate: true, duration: 1.0 });
+            
+            const target = mapMarkers.find(m => m.name === name);
+            if (target) {
+                setTimeout(() => {
+                    target.marker.openPopup();
+                }, 1000);
+            }
+        }
+
+        // 페이지 로드 시 백엔드 세션 검증 및 지도 모달 제어 바인딩
+        document.addEventListener('DOMContentLoaded', () => {
+            // 로컬 파일 환경(file:///)인 경우 세션 체크를 우회하여 로컬 테스트 지원
+            if (window.location.protocol === 'file:') {
+                console.log('Running in local file mode. Skipping session verification.');
+                const loader = document.getElementById('loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500);
+                }
+
+                // 10대 도시 카드에 지도 보기 기능 동적 바인딩
+                const citiesOrder = ['rest1', 'rest2', 'rest3', 'rest4', 'rest5', 'rest6', 'rest7', 'rest8', 'rest9', 'rest10'];
+                document.querySelectorAll('.city-card').forEach((card, index) => {
+                    card.addEventListener('click', () => {
+                        openCityMap(citiesOrder[index]);
+                    });
+                });
+
+                // 닫기 버튼 및 오버레이 클릭 시 닫기 기능 바인딩
+                const closeModalBtn = document.getElementById('closeModal');
+                if (closeModalBtn) closeModalBtn.addEventListener('click', closeCityMap);
+                
+                const mapModal = document.getElementById('mapModal');
+                if (mapModal) {
+                    mapModal.addEventListener('click', (e) => {
+                        if (e.target.id === 'mapModal') {
+                            closeCityMap();
+                        }
+                    });
+                }
+                return;
+            }
+
+            fetch('check_session.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.authenticated) {
+                        window.location.replace('index.html');
+                    } else {
+                        const loader = document.getElementById('loader');
+                        if (loader) {
+                            loader.style.opacity = '0';
+                            setTimeout(() => {
+                                loader.style.display = 'none';
+                            }, 500);
+                        }
+
+                        // 10대 식당 카드에 지도 보기 기능 동적 바인딩
+                        const citiesOrder = ['rest1', 'rest2', 'rest3', 'rest4', 'rest5', 'rest6', 'rest7', 'rest8', 'rest9', 'rest10'];
+                        document.querySelectorAll('.city-card').forEach((card, index) => {
+                            card.addEventListener('click', () => {
+                                openCityMap(citiesOrder[index]);
+                            });
+                        });
+
+                        // 닫기 버튼 및 오버레이 클릭 시 닫기 기능 바인딩
+                        const closeModalBtn = document.getElementById('closeModal');
+                        if (closeModalBtn) closeModalBtn.addEventListener('click', closeCityMap);
+                        
+                        const mapModal = document.getElementById('mapModal');
+                        if (mapModal) {
+                            mapModal.addEventListener('click', (e) => {
+                                if (e.target.id === 'mapModal') {
+                                    closeCityMap();
+                                }
+                            });
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Session check failed:', err);
+                    window.location.replace('index.html');
+                });
+        });
+    </script>
+</body>
+</html>

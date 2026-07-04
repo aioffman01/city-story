@@ -1,0 +1,13 @@
+# Temp/OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific caches/logs
+*.log
