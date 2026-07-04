@@ -18,14 +18,16 @@
                 <h1>도시이야기</h1>
                 <p class="subtitle" style="margin-bottom: 0;">원격 콘솔 및 서비스 제어 패널에 접속했습니다.</p>
             </div>
-            <button onclick="location.href='logout.php'" class="btn-logout">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                로그아웃
-            </button>
+            <div class="header-buttons" id="headerButtons" style="display: flex; gap: 0.8rem; align-items: center;">
+                <button onclick="location.href='logout.php'" class="btn-logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    로그아웃
+                </button>
+            </div>
         </header>
 
         <!-- 6개 메뉴 카드 그리드 -->
@@ -140,6 +142,56 @@
                         // 세션 인증이 안 된 사용자라면 로그인 페이지로 강제 리다이렉트
                         window.location.replace('index.html');
                     } else {
+                        // 만약 로그인 아이디가 admin인 경우 사이트 관리 버튼 동적 생성 및 우측 상단 삽입
+                        if (data.user_id === 'admin') {
+                            const headerButtons = document.getElementById('headerButtons');
+                            const adminBtn = document.createElement('button');
+                            adminBtn.className = 'btn-admin';
+                            adminBtn.style.cssText = `
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 0.5rem;
+                                padding: 0.6rem 1.2rem;
+                                border-radius: 12px;
+                                border: 1px solid rgba(139, 92, 246, 0.4);
+                                background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+                                color: #c084fc;
+                                font-size: 0.95rem;
+                                font-weight: 600;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            `;
+                            adminBtn.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #c084fc;">
+                                    <rect x="3" y="3" width="7" height="9"></rect>
+                                    <rect x="14" y="3" width="7" height="5"></rect>
+                                    <rect x="14" y="12" width="7" height="9"></rect>
+                                    <rect x="3" y="16" width="7" height="5"></rect>
+                                </svg>
+                                사이트 관리
+                            `;
+                            adminBtn.onclick = () => {
+                                location.href = 'admin.html';
+                            };
+                            
+                            // 호버 인터랙션 효과 정의
+                            adminBtn.onmouseover = () => {
+                                adminBtn.style.background = 'linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(99, 102, 241, 0.4) 100%)';
+                                adminBtn.style.borderColor = 'rgba(139, 92, 246, 0.8)';
+                                adminBtn.style.transform = 'translateY(-2px)';
+                                adminBtn.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.25)';
+                            };
+                            adminBtn.onmouseout = () => {
+                                adminBtn.style.background = 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%)';
+                                adminBtn.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+                                adminBtn.style.transform = 'translateY(0)';
+                                adminBtn.style.boxShadow = 'none';
+                            };
+
+                            // 로그아웃 버튼 이전에 배치
+                            headerButtons.insertBefore(adminBtn, headerButtons.firstChild);
+                        }
+
                         // 인증된 경우 로딩 인디케이터 서서히 제거
                         const loader = document.getElementById('loader');
                         loader.style.opacity = '0';

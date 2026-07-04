@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도시이야기 - 사이트 관리</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .admin-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.8rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        .admin-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+        }
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0.5rem 0;
+        }
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        .admin-table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            text-align: left;
+        }
+        .admin-table th {
+            padding: 1rem;
+            border-bottom: 2px solid var(--card-border);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .admin-table tr:hover td {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 로딩 화면 -->
+    <div id="loader" class="loader-container">
+        <div class="loader"></div>
+    </div>
+
+    <div class="admin-container">
+        <header class="admin-header">
+            <div>
+                <h1>사이트 관리 콘솔</h1>
+                <p class="subtitle" style="margin-bottom: 0;">시스템 현황 확인 및 사용자 권한 관리를 수행합니다.</p>
+            </div>
+            <div style="display: flex; gap: 0.8rem;">
+                <button onclick="location.href='menu.html'" class="btn-logout" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--text-primary);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.4rem;">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    이전 메뉴
+                </button>
+                <button onclick="location.href='logout.php'" class="btn-logout">
+                    로그아웃
+                </button>
+            </div>
+        </header>
+
+        <!-- 핵심 요약 지표 카드 -->
+        <div class="admin-grid">
+            <div class="admin-card">
+                <div class="stat-label">전체 활성 사용자</div>
+                <div class="stat-value" id="activeUsers">3명</div>
+                <p class="subtitle" style="font-size: 0.85rem; margin-bottom: 0;">데이터베이스 기준 등록 회원 수</p>
+            </div>
+            <div class="admin-card">
+                <div class="stat-label">시스템 부하 및 상태</div>
+                <div class="stat-value" style="color: #10b981;">Normal</div>
+                <p class="subtitle" style="font-size: 0.85rem; margin-bottom: 0;">서버 CPU & RAM 모니터링 안전성</p>
+            </div>
+            <div class="admin-card">
+                <div class="stat-label">데이터베이스 연결</div>
+                <div class="stat-value" style="color: #10b981;">Online</div>
+                <p class="subtitle" style="font-size: 0.85rem; margin-bottom: 0;">MySQL 3306 포트 리스닝 중</p>
+            </div>
+        </div>
+
+        <!-- 사용자 관리 목록 테두리 -->
+        <div class="admin-table-container">
+            <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem;">시스템 등록 계정 명단</h2>
+            <p class="subtitle">플랫폼에 정식으로 가입한 가용 회원 목록입니다.</p>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>유저 ID</th>
+                        <th>사용자 이름</th>
+                        <th>연락처</th>
+                        <th>이메일</th>
+                        <th>가입일자</th>
+                        <th>권한 상태</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <tr>
+                        <td>admin</td>
+                        <td>최고관리자</td>
+                        <td>010-0000-0000</td>
+                        <td>admin@citystory.com</td>
+                        <td>2026-07-04</td>
+                        <td><span class="badge active">Administrator</span></td>
+                    </tr>
+                    <!-- 동적 유저 데이터 바인딩 예정 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 페이지 로드 시 보안 및 세션 검증
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('check_session.php')
+                .then(response => response.json())
+                .then(data => {
+                    // 세션이 없거나 admin이 아닌 경우 index.html로 즉시 강제 리다이렉트 (보안 조치)
+                    if (!data.authenticated || data.user_id !== 'admin') {
+                        window.location.replace('index.html');
+                    } else {
+                        // 인증 통과 시 로딩 제거
+                        const loader = document.getElementById('loader');
+                        loader.style.opacity = '0';
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                        }, 500);
+                    }
+                })
+                .catch(err => {
+                    console.error('Admin verification failed:', err);
+                    window.location.replace('index.html');
+                });
+        });
+    </script>
+</body>
+</html>

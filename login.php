@@ -9,6 +9,7 @@
 session_start();
 
 require_once __DIR__ . '/conf/db_config.php';
+require_once __DIR__ . '/lib_table/userinfo_tbl.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = isset($_POST['user_id']) ? trim($_POST['user_id']) : '';
@@ -19,29 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $db = get_db_connection();
+    // userinfo 테이블 모델 인스턴스 생성
+    $userinfoTbl = new userinfo_tbl();
 
-    if ($db === false) {
-        error_log("Login database connection failed.");
-        header("Location: index.html?error=invalid");
-        exit;
-    }
+    // 회원 정보 조회를 통해 인증 수행 (SQL 쿼리 캡슐화)
+    $row = $userinfoTbl->getUserForAuth($userId);
 
-    // Query user by user_id
-    $sql = "SELECT id, user_id, name, password FROM userinfo WHERE user_id = ?";
-    $stmt = $db->prepare($sql);
-    
-    if ($stmt === false) {
-        error_log("Login query prepare failed: " . $db->errormsg());
-        header("Location: index.html?error=invalid");
-        exit;
-    }
-
-    $result = $db->execute($stmt, array($userId));
-
-    if ($result && $db->num_rows($result) > 0) {
-        $row = $db->fetch_array($result);
-        
+    if ($row !== null) {
         // Verify the password hash securely
         if (password_verify($password, $row['password'])) {
             // Authentication success: store session variables
@@ -50,12 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['name'] = $row['name'];
             $_SESSION['last_activity'] = time();
 
-            // Log login time to the database
-            $updateSql = "UPDATE userinfo SET last_login_at = NOW() WHERE id = ?";
-            $updateStmt = $db->prepare($updateSql);
-            if ($updateStmt !== false) {
-                $db->execute($updateStmt, array($row['id']));
-            }
+            // 로그인 성공 시 마지막 로그인 시간 업데이트
+            $userinfoTbl->updateLastLogin($row['id']);
 
             header("Location: menu.html");
             exit;

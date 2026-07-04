@@ -9,6 +9,7 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/conf/db_config.php';
+require_once __DIR__ . '/lib_table/userinfo_tbl.php';
 
 // Accept both POST and GET for flexibility (prefer POST for forms, GET for test)
 $userId = isset($_REQUEST['user_id']) ? trim($_REQUEST['user_id']) : '';
@@ -30,30 +31,11 @@ if ($db === false) {
     exit;
 }
 
-$sql = "SELECT id FROM userinfo WHERE user_id = ?";
-$stmt = $db->prepare($sql);
+// userinfo 테이블 모델 클래스 인스턴스 생성
+$userinfoTbl = new userinfo_tbl();
 
-if ($stmt === false) {
-    echo json_encode(array(
-        'exists' => false, 
-        'error' => 'db_prepare_failed',
-        'message' => $db->errormsg()
-    ));
-    exit;
-}
-
-$result = $db->execute($stmt, array($userId));
-
-if ($result === false) {
-    echo json_encode(array(
-        'exists' => false, 
-        'error' => 'db_execute_failed',
-        'message' => $db->errormsg()
-    ));
-    exit;
-}
-
-$exists = ($db->num_rows($result) > 0);
+// 클래스 메서드를 통해 중복 아이디가 존재하는지 확인 (SQL 쿼리가 캡슐화됨)
+$exists = $userinfoTbl->existsUser($userId);
 
 echo json_encode(array(
     'exists' => $exists

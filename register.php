@@ -7,6 +7,7 @@
  */
 
 require_once __DIR__ . '/conf/db_config.php';
+require_once __DIR__ . '/lib_table/userinfo_tbl.php';
 
 $errorMsg = '';
 $success = false;
@@ -22,36 +23,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($userId === '' || $name === '' || $password === '') {
         $errorMsg = '아이디, 이름, 비밀번호는 필수 입력 항목입니다.';
     } else {
-        $db = get_db_connection();
+        // userinfo 테이블 모델 인스턴스 생성
+        $userinfoTbl = new userinfo_tbl();
 
-        if ($db === false) {
-            $errorMsg = '데이터베이스 연결에 실패했습니다. 관리자에게 문의하세요.';
+        // 1. 서버 측에서 아이디 중복 체크 (SQL 쿼리 캡슐화)
+        if ($userinfoTbl->existsUser($userId)) {
+            $errorMsg = '이미 존재하거나 사용 중인 아이디입니다.';
         } else {
-            // 1. Double check ID duplication on the server side
-            $checkSql = "SELECT id FROM userinfo WHERE user_id = ?";
-            $checkStmt = $db->prepare($checkSql);
-            $checkRes = $db->execute($checkStmt, array($userId));
+            // 2. 패스워드를 안전한 bcrypt 해시로 단방향 암호화
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            if ($checkRes && $db->num_rows($checkRes) > 0) {
-                $errorMsg = '이미 존재하거나 사용 중인 아이디입니다.';
+            // 3. 데이터베이스에 사용자 정보 삽입 (SQL 쿼리 캡슐화)
+            $insertRes = $userinfoTbl->insertUser($userId, $name, $hashedPassword, $phone, $email, $address);
+
+            if ($insertRes) {
+                // 가입 성공 시 로그인 페이지로 이동
+                header("Location: index.html?register=success");
+                exit;
             } else {
-                // 2. Encrypt/Hash the password using secure bcrypt
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-                // 3. Insert user info into database
-                $insertSql = "INSERT INTO userinfo (user_id, name, password, phone, email, address, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-                $insertStmt = $db->prepare($insertSql);
-                $params = array($userId, $name, $hashedPassword, $phone, $email, $address);
-
-                $insertRes = $db->execute($insertStmt, $params);
-
-                if ($insertRes) {
-                    // Registration successful, redirect to login page with success code
-                    header("Location: index.html?register=success");
-                    exit;
-                } else {
-                    $errorMsg = '회원 가입 처리 중 데이터베이스 오류가 발생했습니다: ' . $db->errormsg();
-                }
+                $errorMsg = '회원 가입 처리 중 데이터베이스 오류가 발생했습니다: ' . $userinfoTbl->getErrorMsg();
             }
         }
     }
