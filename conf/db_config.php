@@ -9,14 +9,13 @@
 // Require the MysqlOdbc class
 require_once dirname(__DIR__) . '/php_lib/MysqlOdbc.php';
 
-// Database credentials setup
-// Modify these constants to match your database environment
-define('DB_HOST', 'localhost');
-define('DB_PORT', 3306);
-define('DB_USER', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'test_db');
-define('DB_CHARSET', 'utf8mb4');
+// Database credentials setup - supports environment variables for containerization
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_PORT', getenv('DB_PORT') ? (int)getenv('DB_PORT') : 3306);
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASSWORD', getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '');
+define('DB_NAME', getenv('DB_NAME') ?: 'test_db');
+define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
 
 /**
  * Retrieves the database connection singleton.

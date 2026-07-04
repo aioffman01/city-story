@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Web application service running Apache and PHP
+  web:
+    build: .
+    container_name: city_story_web
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html/
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=test_db
+      - DB_CHARSET=utf8mb4
+    depends_on:
+      - db
+
+  # Database service running MySQL 8.0
+  db:
+    image: mysql:8.0
+    container_name: city_story_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=test_db
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    volumes:
+      - db_data:/var/lib/mysql
+      # Auto-initializes the table by executing userinfo.tbl.sql on first container run
+      - ./table/userinfo.tbl.sql:/docker-entrypoint-initdb.d/userinfo.tbl.sql
+
+volumes:
+  db_data:
