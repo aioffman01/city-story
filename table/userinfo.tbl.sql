@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS `userinfo` (
   `address` VARCHAR(255) DEFAULT NULL COMMENT 'Postal Address',
   `last_login_at` DATETIME DEFAULT NULL COMMENT 'Last Login Date/Time',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Registration Date/Time'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
